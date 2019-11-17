@@ -25,16 +25,18 @@ purple = (77, 0, 204)
 pink = (255, 77, 255)
 orange = (255, 135, 0)
 yellow = (255, 255, 0)
+green = (0, 143, 17)
 
 health = 0
 stats = [0,0,0,0,0]
 color = [blue, purple, pink, orange, yellow]
 label = ["Statistic", 'Statistic', 'Statistic', 'Statistic', 'Statistic']
 namesArr = ['Name 1', 'Name 2', 'Name 3', 'Name 4', 'Name 5']
-imgArr = ['octoCat1.png', 'octoCat2.png', 'octoCat1.png', 'octoCat2.png', 'octoCat1.png']
+imgArr = ['octoCat1.png', 'octoCat2.png', 'octoCat3.png', 'octoCat4.png', 'octoCat2.png']
 name = 'Test'
 currentCoordinates = [1,1]
 goalCoordinates = [5,5]
+previousText = 'Welcome to the Machine.'
 
 sprite = pygame.image.load('playerTemp.png')
 goal = pygame.image.load('goal.png')
@@ -70,9 +72,9 @@ def draw_stats():
     for i in range(1, 6):
         myfont = pygame.font.SysFont('Arial', 22)
         textsurface = myfont.render(label[i-1] + ':  ' + str(stats[i-1]), False, grey)
-        gameDisplay.blit(textsurface, (1060, 595 + (i*60)))
+        gameDisplay.blit(textsurface, (1060, 595 + (i*40)))
 
-        pygame.draw.rect(gameDisplay, color[i-1], [1190, 600 + (i*60), 27 * stats[i-1], 20])
+        pygame.draw.rect(gameDisplay, color[i-1], [1190, 600 + (i*40), 27 * stats[i-1], 20])
 
 def draw_health():
     pygame.draw.rect(gameDisplay, red, [1040, 560, 420, 20])
@@ -85,9 +87,23 @@ def draw_character_stat():
 
     gameDisplay.blit(profile, (1050, 80))
 
+def draw_text(outputText):
+    global previousText
+
+    if outputText == None:
+        font = pygame.font.SysFont('Courier', 24, False, False)
+        text = font.render(previousText, False, green)
+        gameDisplay.blit(text, (1050, 850))
+    else:
+        font = pygame.font.SysFont('Courier', 24, False, False)
+        text = font.render(outputText, False, green)
+        gameDisplay.blit(text, (1050, 850))
+        previousText = outputText
+
 #This function is called when the robot begins moving, and should return when
 #it notices a change in colour, with the colour detected.
 #For now, just returns a random colour.
+#FR THO THIS IS GONNA BE REALLY IMPORTANT
 def get_colour_from_robot():
     return color[random.randint(0,4)]
 
@@ -108,7 +124,6 @@ def player_move(direction):
 def game_loop():
 
     gameExit = False
-    
     while not gameExit:
 
         for event in pygame.event.get():
@@ -130,6 +145,7 @@ def game_loop():
         draw_stats()
         draw_health()
         draw_character_stat()
+        draw_text(None)
         pygame.display.update()
         clock.tick(60)
 
@@ -139,6 +155,7 @@ draw_board()
 draw_stats()
 draw_health()
 draw_character_stat()
+draw_text('Welcome to the Machine.')
 game_loop()
 pygame.quit()
 quit()
