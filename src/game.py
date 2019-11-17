@@ -31,25 +31,32 @@ health = 0
 stats = [0,0,0,0,0]
 color = [blue, purple, pink, orange, yellow]
 label = ["Statistic", 'Statistic', 'Statistic', 'Statistic', 'Statistic']
-namesArr = ['Name 1', 'Name 2', 'Name 3', 'Name 4', 'Name 5']
-imgArr = ['octoCat1.png', 'octoCat2.png', 'octoCat3.png', 'octoCat4.png', 'octoCat2.png']
+namesArr = ['Octocat', 'Octocat Pirate', 'Octocat Cowboy', 'Octocat Cyborg', 'Goth Octocat']
+imgArr = ['octoCat1.png', 'octoCat2.png', 'octoCat3.png', 'octoCat4.png', 'octoCat5.png']
+imgArrSmall = ['octoCat1small.png', 'octoCat2small.png', 'octoCat3small.png', 'octoCat4small.png', 'octoCat5small.png']
+bosses = [0 for i in range(25)]
 name = 'Test'
 currentCoordinates = [1,1]
-goalCoordinates = [5,5]
 previousText = 'Welcome to the Machine.'
 
-sprite = pygame.image.load('playerTemp.png')
-goal = pygame.image.load('goal.png')
+boss1 = pygame.image.load('goal.png')
+boss2 = pygame.image.load('goal.png')
+boss3 = pygame.image.load('goal.png')
+b1 = (0,0)
+b2 = (0,0)
+b3 = (0,0)
+sprite = pygame.image.load(imgArrSmall[0])
 
 def coordinates(x,y):
     return (50 + (200*(x-1)), 50 + 200*(y-1))
 
 def generate_stats():
-    global health, stats, namesArr, name, profile
+    global health, stats, namesArr, name, profile, sprite
     health = 100
     x = random.randint(0,4)
     name = namesArr[x]
     profile = pygame.image.load(imgArr[x])
+    sprite = pygame.image.load(imgArrSmall[x])
 
     for i in range(5):
         stats[i] = random.randint(1,10)
@@ -63,7 +70,9 @@ def draw_board():
             pygame.draw.rect(gameDisplay, dark_grey, [x * square_size + border_size, y * square_size + border_size, tile_size, tile_size])
 
     gameDisplay.blit(sprite, coordinates(currentCoordinates[0], currentCoordinates[1]))
-    gameDisplay.blit(goal, coordinates(goalCoordinates[0], goalCoordinates[1]))
+    gameDisplay.blit(boss1, coordinates(*b1))
+    gameDisplay.blit(boss2, coordinates(*b2))
+    gameDisplay.blit(boss3, coordinates(*b3))
 
 def draw_stats():
     pygame.draw.rect(gameDisplay, dark_grey, [display_height + border_size, border_size, display_width - display_height - (2*border_size), display_height - (2*border_size)])
@@ -83,7 +92,7 @@ def draw_health():
 def draw_character_stat():
     myfont = pygame.font.SysFont('Arial', 34)
     textsurface = myfont.render(name, False, grey)
-    gameDisplay.blit(textsurface, (1200, 40))
+    gameDisplay.blit(textsurface, (1160, 40))
 
     gameDisplay.blit(profile, (1050, 80))
 
@@ -100,6 +109,21 @@ def draw_text(outputText):
         gameDisplay.blit(text, (1050, 850))
         previousText = outputText
 
+def draw_attack():
+    pygame.draw.rect(gameDisplay, red, [1050, 910, 400, 60])
+
+def generate_boss():
+    boss = random.randint(1,24)
+    
+    while True:
+        if bosses[boss] == 0:
+            bosses[boss] = 1
+            print(boss)
+            return (boss % 5 + 1, int(boss/5)+1)
+        else:
+            boss = random.randint(0,24)
+
+
 #This function is called when the robot begins moving, and should return when
 #it notices a change in colour, with the colour detected.
 #For now, just returns a random colour.
@@ -111,15 +135,23 @@ def player_move(direction):
     if direction == "left":
         if currentCoordinates[0] != 1:
             currentCoordinates[0] = currentCoordinates[0] - 1
+            if bosses[(currentCoordinates[1]-1) * 5 + currentCoordinates[0] - 1] == 1:
+                draw_text('Prepare for an encounter')
     elif direction == "right":
         if currentCoordinates[0] != 5:
             currentCoordinates[0] = currentCoordinates[0] + 1
+            if bosses[(currentCoordinates[1]-1) * 5 + currentCoordinates[0] - 1] == 1:
+                draw_text('Prepare for an encounter')
     elif direction == "up":
         if currentCoordinates[1] != 1:
             currentCoordinates[1] = currentCoordinates[1] - 1
+            if bosses[(currentCoordinates[1]-1) * 5 + currentCoordinates[0] - 1] == 1:
+                draw_text('Prepare for an encounter')
     elif direction == "down":
         if currentCoordinates[1] != 5:
             currentCoordinates[1] = currentCoordinates[1] + 1
+            if bosses[(currentCoordinates[1]-1) * 5 + currentCoordinates[0] - 1] == 1:
+                draw_text('Prepare for an encounter')
 
 def game_loop():
 
@@ -146,11 +178,16 @@ def game_loop():
         draw_health()
         draw_character_stat()
         draw_text(None)
+        if bosses[(currentCoordinates[1]-1) * 5 + currentCoordinates[0] - 1] == 1:
+                draw_attack()
         pygame.display.update()
         clock.tick(60)
 
 
 generate_stats()
+b1 = generate_boss()
+b2 = generate_boss()
+b3 = generate_boss()
 draw_board()
 draw_stats()
 draw_health()
