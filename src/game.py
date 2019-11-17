@@ -111,7 +111,7 @@ def game_loop():
                 pygame.quit()
                 quit()
             #player movement
-            elif event.type == pygame.KEYDOWN or event.type == pygame.KEYUP:
+            elif event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_LEFT:
                     player_move("left")
                 elif event.key == pygame.K_RIGHT:
