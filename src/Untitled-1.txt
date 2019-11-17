@@ -46,17 +46,16 @@ boss3 = pygame.image.load('goal.png')
 sprite = pygame.image.load(imgArrSmall[0])
 
 class boss():
-    def __init__(self):
+    def __init__():
         num = random.randint(1,24)
-        self.bossAlive = True
+        bossAlive = True
 
         while True:
             if bosses[num] == 0:
                 bosses[num] = 1
                 print(num)
-                self.bossCoords =  (num % 5 + 1, int(num/5)+1)
-                self.bossArrPos = num
-                break
+                bossCoords =  (num % 5 + 1, int(num/5)+1)
+                bossArrPos = num
             else:
                 num = random.randint(0,24)
 
@@ -89,15 +88,10 @@ def draw_board():
     #Displaying bosses
     for i in bosses:
         if bosses[i] == 1:
-            if b1.bossArrPos == i:
-                if b1.bossAlive == True:
-                    gameDisplay.blit(boss1, coordinates(*thisBoss.bossCoords))
-            elif b2.bossArrPos == i:
-                if b2.bossAlive == True:
-                    gameDisplay.blit(boss1, coordinates(*thisBoss.bossCoords))
-            if b3.bossArrPos == i:
-                if b3.bossAlive == True:
-                    gameDisplay.blit(boss1, coordinates(*thisBoss.bossCoords))
+            for thisBoss in b1, b2, b3:
+                if thisBoss.bossArrPos == i:
+                    if thisBoss.bossAlive == True:
+                        gameDisplay.blit(boss1, coordinates(*thisBoss.bossCoords))
 
 def draw_stats():
     pygame.draw.rect(gameDisplay, dark_grey, [display_height + border_size, border_size, display_width - display_height - (2*border_size), display_height - (2*border_size)])
@@ -204,31 +198,11 @@ def attack(num):
             b1.bossAlive = False
         elif roll == threshold:
             draw_text('They got away. So did you.')
-            
-            num = random.randint(1,24)
-
-            while True:
-                if bosses[num] == 0:
-                    bosses[num] = 1
-                    print(num)
-                    b1.bossCoords =  (num % 5 + 1, int(num/5)+1)
-                    b1.bossArrPos = num
-                else:
-                    num = random.randint(0,24)
+            b1 = generate_boss()
         elif roll < threshold:
             draw_text('That one hurt.')
             health = health - 10
-            
-            num = random.randint(1,24)
-
-            while True:
-                if bosses[num] == 0:
-                    bosses[num] = 1
-                    print(num)
-                    b1.bossCoords =  (num % 5 + 1, int(num/5)+1)
-                    b1.bossArrPos = num
-                else:
-                    num = random.randint(0,24)
+            b1 = generate_boss()
 
     elif num == b2.bossArrPos & b2.bossAlive == True:
         #Boss weighting - bosses get harder the fewer are left
@@ -260,31 +234,11 @@ def attack(num):
             b2.bossAlive = False
         elif roll == threshold:
             draw_text('They got away. So did you.')
-            
-            num = random.randint(1,24)
-
-            while True:
-                if bosses[num] == 0:
-                    bosses[num] = 1
-                    print(num)
-                    b2.bossCoords =  (num % 5 + 1, int(num/5)+1)
-                    b2.bossArrPos = num
-                else:
-                    num = random.randint(0,24)
+            b2 = generate_boss()
         elif roll < threshold:
             draw_text('That one hurt.')
             health = health - 10
-            
-            num = random.randint(1,24)
-
-            while True:
-                if bosses[num] == 0:
-                    bosses[num] = 1
-                    print(num)
-                    b2.bossCoords =  (num % 5 + 1, int(num/5)+1)
-                    b2.bossArrPos = num
-                else:
-                    num = random.randint(0,24)
+            b2 = generate_boss()
 
     elif num == b3.bossArrPos & b3.bossAlive == True:
         #Boss weighting - bosses get harder the fewer are left
@@ -316,31 +270,11 @@ def attack(num):
             b3.bossAlive = False
         elif roll == threshold:
             draw_text('They got away. So did you.')
-            
-            num = random.randint(1,24)
-
-            while True:
-                if bosses[num] == 0:
-                    bosses[num] = 1
-                    print(num)
-                    b3.bossCoords =  (num % 5 + 1, int(num/5)+1)
-                    b3.bossArrPos = num
-                else:
-                    num = random.randint(0,24)
+            b3 = generate_boss()
         elif roll < threshold:
             draw_text('That one hurt.')
             health = health - 10
-            
-            num = random.randint(1,24)
-
-            while True:
-                if bosses[num] == 0:
-                    bosses[num] = 1
-                    print(num)
-                    b3.bossCoords =  (num % 5 + 1, int(num/5)+1)
-                    b3.bossArrPos = num
-                else:
-                    num = random.randint(0,24)
+            b3 = generate_boss()
 
     bosses[num] = 0
 
