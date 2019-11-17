@@ -32,7 +32,6 @@ color = [blue, purple, pink, orange, yellow]
 label = ["Statistic", 'Statistic', 'Statistic', 'Statistic', 'Statistic']
 name = ['Name 1', 'Name 2', 'Name 3', 'Name 4', 'Name 5']
 currentCoordinates = [1,1]
-oldCoordinates = [0,0]
 
 profile = pygame.image.load('profile.png')
 sprite = pygame.image.load('playerTemp.png')
@@ -54,6 +53,8 @@ def draw_board():
     for y in range(0, 5):
         for x in range(0, 5):
             pygame.draw.rect(gameDisplay, dark_grey, [x * square_size + border_size, y * square_size + border_size, tile_size, tile_size])
+
+    gameDisplay.blit(sprite, coordinates(currentCoordinates[0], currentCoordinates[1]))
 
 def draw_stats():
     pygame.draw.rect(gameDisplay, dark_grey, [display_height + border_size, border_size, display_width - display_height - (2*border_size), display_height - (2*border_size)])
@@ -79,8 +80,6 @@ def draw_character_stat():
 
     gameDisplay.blit(profile, (1050, 80))
 
-    gameDisplay.blit(sprite, coordinates(currentCoordinates[0], currentCoordinates[1]))
-
 #This function is called when the robot begins moving, and should return when
 #it notices a change in colour, with the colour detected.
 #For now, just returns a random colour.
@@ -90,24 +89,16 @@ def get_colour_from_robot():
 def player_move(direction):
     if direction == "left":
         if currentCoordinates[0] != 1:
-            oldCoordinates[0] = currentCoordinates[0]
             currentCoordinates[0] = currentCoordinates[0] - 1
     elif direction == "right":
         if currentCoordinates[0] != 5:
-            oldCoordinates[0] = currentCoordinates[0]
             currentCoordinates[0] = currentCoordinates[0] + 1
     elif direction == "up":
-        if currentCoordinates[1] != 5:
-            oldCoordinates[1] = currentCoordinates[1]
+        if currentCoordinates[1] != 1:
             currentCoordinates[1] = currentCoordinates[1] - 1
     elif direction == "down":
-        if currentCoordinates[1] != 1:
-            oldCoordinates[1] = currentCoordinates[1]
+        if currentCoordinates[1] != 5:
             currentCoordinates[1] = currentCoordinates[1] + 1
-
-def redraw_player(x,y,xold,yold):
-    pygame.draw.rect(gameDisplay, dark_grey, [xold * square_size + border_size, yold * square_size + border_size, tile_size, tile_size])
-    gameDisplay.blit(sprite, coordinates(x,y))
 
 def game_loop():
 
@@ -130,7 +121,10 @@ def game_loop():
                 elif event.key == pygame.K_DOWN:
                     player_move("down")
 
-        redraw_player(currentCoordinates[0], currentCoordinates[1], oldCoordinates[0], oldCoordinates[1])
+        draw_board()
+        draw_stats()
+        draw_health()
+        draw_character_stat()
         pygame.display.update()
         clock.tick(60)
 
