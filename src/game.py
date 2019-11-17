@@ -1,8 +1,19 @@
 import pygame
 import time
 import random
+import socket
+import sys
 
 pygame.font.init()
+
+
+# Networking
+sock = None
+client_addr = None
+connection = None
+
+
+# GUI
 
 display_width = 1500
 display_height = 1000
@@ -50,6 +61,9 @@ b1 = (0,0)
 b2 = (0,0)
 b3 = (0,0)
 sprite = pygame.image.load(imgArrSmall[0])
+
+def send_movement(client):
+    pass
 
 def coordinates(x,y):
     return (50 + (200*(x-1)), 50 + 200*(y-1))
@@ -142,6 +156,7 @@ def get_colour_from_robot():
     return color[random.randint(0,4)]
 
 def player_move(direction):
+    global connection
     if direction == "left":
         if currentCoordinates[0] != 1:
             currentCoordinates[0] = currentCoordinates[0] - 1
@@ -162,6 +177,9 @@ def player_move(direction):
             currentCoordinates[1] = currentCoordinates[1] + 1
             if bosses[(currentCoordinates[1]-1) * 5 + currentCoordinates[0] - 1] != 0:
                 draw_text('Prepare for an encounter')
+        
+    connection.sendall(direction.encode("ascii"))
+
 
 def attack(boss):
     global health, bosses, boss1Bool, boss2Bool, boss3Bool
@@ -209,6 +227,9 @@ def attack(boss):
         draw_text('That one hurt.')
         health = health - 20
         generate_boss(bosses[boss])
+        
+    
+   
 
 def game_loop():
 
@@ -247,10 +268,27 @@ def game_loop():
         clock.tick(60)
 
 
+def init_connection():
+    global client_addr, sock,connection
+    sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+    server_addr = ('0.0.0.0', 7777)
+    print("Starting up on %s:%d"%server_addr)
+    sock.bind(server_addr)
+
+    sock.listen(1)
+    print("Waiting for a connection")
+    connection, client_addr  = sock.accept() 
+    print("Got connection from", client_addr)
+
+
+init_connection()
 generate_stats()
+
 b1 = generate_boss(1)
 b2 = generate_boss(2)
 b3 = generate_boss(3)
+
 draw_board()
 draw_stats()
 draw_health()
