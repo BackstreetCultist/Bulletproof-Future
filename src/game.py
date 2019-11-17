@@ -31,19 +31,23 @@ stats = [0,0,0,0,0]
 color = [blue, purple, pink, orange, yellow]
 label = ["Statistic", 'Statistic', 'Statistic', 'Statistic', 'Statistic']
 namesArr = ['Name 1', 'Name 2', 'Name 3', 'Name 4', 'Name 5']
+imgArr = ['octoCat1.png', 'octoCat2.png', 'octoCat1.png', 'octoCat2.png', 'octoCat1.png']
 name = 'Test'
 currentCoordinates = [1,1]
+goalCoordinates = [5,5]
 
-profile = pygame.image.load('profile.png')
 sprite = pygame.image.load('playerTemp.png')
+goal = pygame.image.load('goal.png')
 
 def coordinates(x,y):
     return (50 + (200*(x-1)), 50 + 200*(y-1))
 
 def generate_stats():
-    global health, stats, namesArr, name
+    global health, stats, namesArr, name, profile
     health = 100
-    name = namesArr[random.randint(0,4)]
+    x = random.randint(0,4)
+    name = namesArr[x]
+    profile = pygame.image.load(imgArr[x])
 
     for i in range(5):
         stats[i] = random.randint(1,10)
@@ -57,6 +61,7 @@ def draw_board():
             pygame.draw.rect(gameDisplay, dark_grey, [x * square_size + border_size, y * square_size + border_size, tile_size, tile_size])
 
     gameDisplay.blit(sprite, coordinates(currentCoordinates[0], currentCoordinates[1]))
+    gameDisplay.blit(goal, coordinates(goalCoordinates[0], goalCoordinates[1]))
 
 def draw_stats():
     pygame.draw.rect(gameDisplay, dark_grey, [display_height + border_size, border_size, display_width - display_height - (2*border_size), display_height - (2*border_size)])
