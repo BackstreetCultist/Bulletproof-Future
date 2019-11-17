@@ -31,6 +31,11 @@ stats = [0,0,0,0,0]
 color = [blue, purple, pink, orange, yellow]
 label = ["Statistic", 'Statistic', 'Statistic', 'Statistic', 'Statistic']
 name = ['Name 1', 'Name 2', 'Name 3', 'Name 4', 'Name 5']
+currentCoordinates = [1,1]
+oldCoordinates = [0,0]
+
+profile = pygame.image.load('profile.png')
+sprite = pygame.image.load('playerTemp.png')
 
 def coordinates(x,y):
     return (50 + (200*(x-1)), 50 + 200*(y-1))
@@ -72,11 +77,37 @@ def draw_character_stat():
     textsurface = myfont.render(name[random.randint(0,4)], False, grey)
     gameDisplay.blit(textsurface, (1200, 40))
 
-    profile = pygame.image.load('profile.png')
     gameDisplay.blit(profile, (1050, 80))
 
-    sprite = pygame.image.load('Sprite.png')
-    gameDisplay.blit(sprite, coordinates(1,1))
+    gameDisplay.blit(sprite, coordinates(currentCoordinates[0], currentCoordinates[1]))
+
+#This function is called when the robot begins moving, and should return when
+#it notices a change in colour, with the colour detected.
+#For now, just returns a random colour.
+def get_colour_from_robot():
+    return color[random.randint(0,4)]
+
+def player_move(direction):
+    if direction == "left":
+        if currentCoordinates[0] != 1:
+            oldCoordinates[0] = currentCoordinates[0]
+            currentCoordinates[0] = currentCoordinates[0] - 1
+    elif direction == "right":
+        if currentCoordinates[0] != 5:
+            oldCoordinates[0] = currentCoordinates[0]
+            currentCoordinates[0] = currentCoordinates[0] + 1
+    elif direction == "up":
+        if currentCoordinates[1] != 5:
+            oldCoordinates[1] = currentCoordinates[1]
+            currentCoordinates[1] = currentCoordinates[1] - 1
+    elif direction == "down":
+        if currentCoordinates[1] != 1:
+            oldCoordinates[1] = currentCoordinates[1]
+            currentCoordinates[1] = currentCoordinates[1] + 1
+
+def redraw_player(x,y,xold,yold):
+    pygame.draw.rect(gameDisplay, dark_grey, [xold * square_size + border_size, yold * square_size + border_size, tile_size, tile_size])
+    gameDisplay.blit(sprite, coordinates(x,y))
 
 def game_loop():
 
@@ -87,9 +118,19 @@ def game_loop():
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 pygame.quit()
-                quit()   
+                quit()
+            #player movement
+            elif event.type == pygame.KEYDOWN or event.type == pygame.KEYUP:
+                if event.key == pygame.K_LEFT:
+                    player_move("left")
+                elif event.key == pygame.K_RIGHT:
+                    player_move("right")
+                elif event.key == pygame.K_UP:
+                    player_move("up")
+                elif event.key == pygame.K_DOWN:
+                    player_move("down")
 
-        
+        redraw_player(currentCoordinates[0], currentCoordinates[1], oldCoordinates[0], oldCoordinates[1])
         pygame.display.update()
         clock.tick(60)
 
