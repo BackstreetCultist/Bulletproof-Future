@@ -30,7 +30,8 @@ health = 0
 stats = [0,0,0,0,0]
 color = [blue, purple, pink, orange, yellow]
 label = ["Statistic", 'Statistic', 'Statistic', 'Statistic', 'Statistic']
-name = ['Name 1', 'Name 2', 'Name 3', 'Name 4', 'Name 5']
+namesArr = ['Name 1', 'Name 2', 'Name 3', 'Name 4', 'Name 5']
+name = 'Test'
 currentCoordinates = [1,1]
 
 profile = pygame.image.load('profile.png')
@@ -40,8 +41,9 @@ def coordinates(x,y):
     return (50 + (200*(x-1)), 50 + 200*(y-1))
 
 def generate_stats():
-    global health, stats
+    global health, stats, namesArr, name
     health = 100
+    name = namesArr[random.randint(0,4)]
 
     for i in range(5):
         stats[i] = random.randint(1,10)
@@ -68,14 +70,12 @@ def draw_stats():
         pygame.draw.rect(gameDisplay, color[i-1], [1190, 600 + (i*60), 27 * stats[i-1], 20])
 
 def draw_health():
-
-
     pygame.draw.rect(gameDisplay, red, [1040, 560, 420, 20])
     pygame.draw.rect(gameDisplay, green, [1040, 560, 4.2 * health, 20])
 
 def draw_character_stat():
     myfont = pygame.font.SysFont('Arial', 34)
-    textsurface = myfont.render(name[random.randint(0,4)], False, grey)
+    textsurface = myfont.render(name, False, grey)
     gameDisplay.blit(textsurface, (1200, 40))
 
     gameDisplay.blit(profile, (1050, 80))
